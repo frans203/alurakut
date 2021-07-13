@@ -3,11 +3,15 @@ import Box from "../Box";
 
 export const ProfileRelationsBoxWrapper = styled(Box)`
   ul {
-    display: grid;
-    grid-gap: 8px;
-    grid-template-columns: 1fr 1fr 1fr;
-    max-height: 220px;
+    // display: grid;
+    // grid-gap: 8px;
+    // grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    align-items: flex-start;
+
+    flex-wrap: wrap;
     list-style: none;
+    width: 100%;
   }
   img {
     object-fit: cover;
@@ -18,13 +22,15 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
   }
   ul li a {
     display: inline-block;
-    height: 102px;
+    width: 6rem;
+    heigth: 6rem;
+    margin: 0.3rem;
     position: relative;
     overflow: hidden;
     border-radius: 8px;
     span {
       color: #ffffff;
-      font-size: 10px;
+      font-size: 0.9rem;
       position: absolute;
       left: 0;
       bottom: 10px;
@@ -34,6 +40,7 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
       text-overflow: ellipsis;
       width: 100%;
       display: -webkit-box;
+
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
     }

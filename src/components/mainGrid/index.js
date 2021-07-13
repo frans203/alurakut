@@ -8,6 +8,7 @@ const MainGrid = styled.main`
   align-items: flex-start;
   justify-content: center;
   padding: 1.6rem;
+  margin-top: 3rem;
 
   .profileArea {
     display: none;
@@ -18,14 +19,26 @@ const MainGrid = styled.main`
   .welcomeArea {
     width: 100%;
   }
+  .profileRelationsArea {
+    width: 100%;
+  }
   div {
     margin: 0.3rem;
+  }
+  .allBtn {
+    display: none;
   }
   @media (min-width: 860px) {
     // display: grid;
     // grid-template-columns: 10rem 1fr 20rem;
     // grid-template-areas: "profileArea welcomeArea profileRelationsArea";
     flex-direction: row;
+    .welcomeArea {
+      width: 120%;
+    }
+    .profileRelationsArea {
+      width: 80%;
+    }
   } ;
 `;
 

@@ -19,7 +19,7 @@ function Link({ href, children, ...props }) {
 export function AlurakutMenu({ githubUser }) {
   const [isMenuOpen, setMenuState] = React.useState(false);
   return (
-    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
+    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen} githubUser={githubUser}>
       <div className="container">
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
 
@@ -60,14 +60,19 @@ AlurakutMenu.Wrapper = styled.header`
   width: 100%;
   background-color: #308bc5;
   .alurakutMenuProfileSidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
     background: white;
     position: fixed;
     z-index: 100;
-    padding: 46px;
+    padding: 20px;
     bottom: 0;
     left: 0;
     right: 0;
-    top: 48px;
+    top: 0;
+
     transition: 0.3s;
     pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? "all" : "none")};
     opacity: ${({ isMenuOpen }) => (isMenuOpen ? "1" : "0")};
@@ -77,14 +82,14 @@ AlurakutMenu.Wrapper = styled.header`
       display: none;
     }
     > div {
-      max-width: 400px;
+      max-width: 500px;
       margin: auto;
     }
     a {
-      font-size: 18px;
+      font-size: 1.2rem;
     }
     .boxLink {
-      font-size: 18px;
+      font-size: 1.5rem;
       color: #2e7bb4;
       -webkit-text-decoration: none;
       text-decoration: none;
@@ -96,17 +101,23 @@ AlurakutMenu.Wrapper = styled.header`
       border-color: transparent;
       border-bottom-color: #ecf2fa;
     }
+    .profileImg {
+      width: 50%;
+      margin: 0 auto;
+    }
   }
   .container {
     background-color: #308bc5;
-    padding: 7px 16px;
+    padding: 7px 12px;
+    width: 100vw;
     max-width: 1110px;
     margin: auto;
     display: flex;
     justify-content: space-between;
-    position: relative;
+    position: fixed;
     z-index: 101;
     @media (min-width: 860px) {
+      position: relative;
       justify-content: flex-start;
     }
     button {
@@ -114,6 +125,7 @@ AlurakutMenu.Wrapper = styled.header`
       background: transparent;
       align-self: center;
       display: inline-block;
+      margin-right: 2rem;
       @media (min-width: 860px) {
         display: none;
       }
@@ -172,12 +184,14 @@ AlurakutMenu.Logo = styled.img`
 `;
 
 function AlurakutMenuProfileSidebar({ githubUser }) {
+  console.log(githubUser);
   return (
     <div className="alurakutMenuProfileSidebar">
       <div>
         <img
           src={`https://github.com/${githubUser}.png`}
           style={{ borderRadius: "8px" }}
+          className="profileImg"
         />
         <hr />
         <p>

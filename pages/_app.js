@@ -11,9 +11,28 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color:#D9E6F6;
-    font-family: sans-serif
+  
+    font-family: sans-serif;
+    overflow-x: hidden;
+    background: rgb(0,122,213);
+    background: linear-gradient(45deg, rgba(0,122,213,1) 0%, rgba(231,229,229,1) 100%);
+    background-size: 400% 400%;
+    animation: animate 2s ease-in-out infinite alternate;
   } 
+  @keyframes animate {
+    0%{
+     background-position: 0% 0%;
+    }
+    0%{
+      background-position: 25% 50%;
+     }
+    50%{
+      background-position: 50% 75%;
+    }
+    100%{
+      background-position: 100% 100%;
+    }
+  }
   
   #__next {
     display: flex;

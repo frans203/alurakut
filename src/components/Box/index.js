@@ -34,11 +34,12 @@ const Box = styled.div`
     border-bottom-color: #ecf2fa;
   }
   input {
-    width: 100%;
+    width: 80%;
     background-color: #f4f4f4;
     color: #333333;
     border: 0;
     padding: 14px 16px;
+    margin-right: 10px;
     margin-bottom: 14px;
     border-radius: 10000px;
     ::placeholder {
@@ -52,9 +53,6 @@ const Box = styled.div`
     color: #ffffff;
     border-radius: 10000px;
     background-color: #6f92bb;
-  }
-  .profileImg {
-    border-radius: 0.8rem;
   }
 `;
 
