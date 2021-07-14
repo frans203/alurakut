@@ -8,7 +8,29 @@ import {
   AlurakutProfileSidebarMenuDefault,
 } from "../src/components/lib/AlurakutCommons.js";
 import { ProfileRelationsBoxWrapper } from "../src/components/ProfileRelations/index.js";
-
+function ProfileRelationsBox(properties) {
+  console.log(properties);
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {properties.title} ({properties.items.length})
+      </h2>
+      <ul>
+        {properties.items.map((item) => {
+          return (
+            <li key={item.id}>
+              <a target="_blank" href={`${item.html_url}`} key={item}>
+                <img src={`${item.avatar_url}.png`}></img>
+                <span>{item.login}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <button className="comunityBtn allBtn">Mostrar Tudo</button>
+    </ProfileRelationsBoxWrapper>
+  );
+}
 export default function Home() {
   const githubUser = "frans203";
   const [comunities, setComunities] = React.useState([
@@ -49,6 +71,32 @@ export default function Home() {
       </Box>
     );
   }
+  //0 - pegar o array de dados do github
+  const [followers, setFollowers] = React.useState([]);
+  React.useEffect(async function () {
+    // fetch("https://api.github.com/users/frans203/followers")
+    //   .then((data) => {
+    //     return data.json();
+    //   })
+    //   .then((data) => {
+    //     console.log(data);
+    //     setFollowers(data);
+    //     return data;
+    //   })
+    //   .catch(function (e) {
+    //     console.error(e);
+    //   });
+
+    let response = await fetch(
+      "https://api.github.com/users/frans203/followers"
+    );
+    let userData = await response.json();
+    setFollowers(userData);
+    return userData;
+  }, []);
+  console.log("seguidores" + followers);
+  //1-criar um box que vai ter um map baseado nos item do array que pegamos do github
+
   return (
     <>
       <AlurakutMenu githubUser={githubUser} />
@@ -119,6 +167,8 @@ export default function Home() {
           className="profileRelationsArea"
           style={{ gridArea: "profileRelationsArea" }}
         >
+          <ProfileRelationsBox title="Seguidores" items={followers} />
+
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Minhas Comunidades ({comunities.length})
