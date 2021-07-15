@@ -8,15 +8,15 @@ import {
   AlurakutProfileSidebarMenuDefault,
 } from "../src/components/lib/AlurakutCommons.js";
 import { ProfileRelationsBoxWrapper } from "../src/components/ProfileRelations/index.js";
+
 function ProfileRelationsBox(properties) {
-  console.log(properties);
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle">
         {properties.title} ({properties.items.length})
       </h2>
-      <ul>
-        {properties.items.map((item) => {
+      <ul className="ulFollowers">
+        {properties.items.slice(0, 9).map((item, i) => {
           return (
             <li key={item.id}>
               <a target="_blank" href={`${item.html_url}`} key={item}>
@@ -27,20 +27,13 @@ function ProfileRelationsBox(properties) {
           );
         })}
       </ul>
-      <button className="comunityBtn allBtn">Mostrar Tudo</button>
+      <button className="followersBtn allBtn">Mostrar Tudo</button>
     </ProfileRelationsBoxWrapper>
   );
 }
 export default function Home() {
   const githubUser = "frans203";
-  const [comunities, setComunities] = React.useState([
-    {
-      id: "22222",
-      title: "eu odeio acordar cedo",
-      image:
-        "https://cliparting.com/wp-content/uploads/2016/05/Garfield-the-cat-clipart.jpg",
-    },
-  ]);
+  const [comunities, setComunities] = React.useState([]);
   console.log("COMUNITIES", comunities);
 
   const favoritePeople = [
@@ -74,25 +67,54 @@ export default function Home() {
   //0 - pegar o array de dados do github
   const [followers, setFollowers] = React.useState([]);
   React.useEffect(async function () {
-    // fetch("https://api.github.com/users/frans203/followers")
-    //   .then((data) => {
-    //     return data.json();
-    //   })
-    //   .then((data) => {
-    //     console.log(data);
-    //     setFollowers(data);
-    //     return data;
-    //   })
-    //   .catch(function (e) {
-    //     console.error(e);
-    //   });
-
+    /*
+            fetch("https://api.github.com/users/frans203/followers")
+              .then((data) => {
+                return data.json();
+              })
+              .then((data) => {
+                console.log(data);
+                setFollowers(data);
+                return data;
+              })
+              .catch(function (e) {
+                console.error(e);
+              });
+      */
     let response = await fetch(
       "https://api.github.com/users/frans203/followers"
     );
     let userData = await response.json();
     setFollowers(userData);
     return userData;
+  }, []);
+
+  React.useEffect(async function () {
+    //API GraphQl
+    let datoCms = await fetch("https://graphql.datocms.com/", {
+      method: "POST",
+      headers: {
+        Authorization: "b60e8d6cdf96de01a72a8c4c506ccb",
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `query{
+          allCommunities{
+            title
+            id 
+            imageUrl
+            creatorSlug 
+            link
+          }
+        }`,
+      }),
+    });
+
+    let { data } = await datoCms.json();
+    let { allCommunities } = data;
+    setComunities(allCommunities);
+    console.log(allCommunities);
   }, []);
   console.log("seguidores" + followers);
   //1-criar um box que vai ter um map baseado nos item do array que pegamos do github
@@ -121,16 +143,29 @@ export default function Home() {
                 console.log("Input:", formData.get("image"));
 
                 // comunities.push("Alura Stars");
-                const comunity = {
-                  id: new Date().toISOString,
+                let community = {
                   title: formData.get("title"),
-                  image: formData.get("image"),
+                  imageUrl: formData.get("image"),
+                  creatorSlug: githubUser,
+                  link: formData.get("link"),
                 };
-                if (comunities.length < 6) {
-                  const updatedComunities = [...comunities, comunity];
-                  setComunities(updatedComunities);
-                } else if (comunities.length >= 6) {
-                  document.querySelector(".allBtn").style.display = "block";
+
+                fetch("/api/communities", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(community),
+                }).then(async (response) => {
+                  const data = await response.json();
+                  console.log(data);
+                  const community = data.createdRegister;
+                  const updatedCommunities = [...communities, community];
+                  setComunities(updatedCommunities);
+                });
+                if (comunities.length >= 6) {
+                  document.querySelector(".comunityBtn").style.display =
+                    "block";
                   return;
                 }
 
@@ -157,6 +192,13 @@ export default function Home() {
                   aria-label="URL Da imagem"
                   className="form-1-image form-1-input"
                 />
+                <input
+                  placeholder="URL da comunidade"
+                  name="link"
+                  tyoe="text"
+                  aria-label="URL da comunidade"
+                  className="form-1-image form-1-input"
+                />
               </div>
 
               <button>Criar Comunidade</button>
@@ -168,17 +210,17 @@ export default function Home() {
           style={{ gridArea: "profileRelationsArea" }}
         >
           <ProfileRelationsBox title="Seguidores" items={followers} />
-
+          {}
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Minhas Comunidades ({comunities.length})
             </h2>
-            <ul>
-              {comunities.map((item) => {
+            <ul className="communities">
+              {comunities.slice(0, 6).map((item) => {
                 return (
                   <li key={item.id}>
-                    <a href={`/users/${item.title}`} key={item.title}>
-                      <img src={item.image}></img>
+                    <a target="_blank" href={`${item.link}`} key={item.title}>
+                      <img src={item.imageUrl}></img>
                       <span>{item.title}</span>
                     </a>
                   </li>
@@ -192,7 +234,7 @@ export default function Home() {
               Pessoas da comunidade ({favoritePeople.length})
             </h2>
             <ul>
-              {favoritePeople.map((fav, i) => {
+              {favoritePeople.slice(0, 6).map((fav, i) => {
                 if (i > 6) {
                   return;
                 }

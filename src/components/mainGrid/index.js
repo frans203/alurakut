@@ -37,7 +37,7 @@ const MainGrid = styled.main`
       width: 120%;
     }
     .profileRelationsArea {
-      width: 80%;
+      width: 70%;
     }
   } ;
 `;
