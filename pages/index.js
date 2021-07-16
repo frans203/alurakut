@@ -137,10 +137,7 @@ export default function Home() {
             <form
               onSubmit={function handleCrateComunity(e) {
                 e.preventDefault();
-                console.log(e);
                 const formData = new FormData(e.target);
-                console.log("Input:", formData.get("title"));
-                console.log("Input:", formData.get("image"));
 
                 // comunities.push("Alura Stars");
                 let community = {
@@ -158,16 +155,10 @@ export default function Home() {
                   body: JSON.stringify(community),
                 }).then(async (response) => {
                   const data = await response.json();
-                  console.log(data);
                   const community = data.createdRegister;
                   const updatedCommunities = [...communities, community];
                   setComunities(updatedCommunities);
                 });
-                if (comunities.length >= 6) {
-                  document.querySelector(".comunityBtn").style.display =
-                    "block";
-                  return;
-                }
 
                 const inputs = document.querySelectorAll(".form-1-input");
                 inputs.forEach((el) => {

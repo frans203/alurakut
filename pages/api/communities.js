@@ -1,5 +1,4 @@
 import { SiteClient } from "datocms-client";
-console.log(SiteClient);
 export default async function requestReceiver(request, response) {
   if (request.method === "POST") {
     const TOKEN = "6f2d0e98558c3d98947abca2c4eaee";
