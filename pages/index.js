@@ -1,5 +1,6 @@
 import React from "react";
-import styled from "styled-components";
+import nookies from "nookies";
+import jwt from "jsonwebtoken";
 import MainGrid from "../src/components/mainGrid";
 import Box from "../src/components/Box";
 import {
@@ -31,10 +32,9 @@ function ProfileRelationsBox(properties) {
     </ProfileRelationsBoxWrapper>
   );
 }
-export default function Home() {
-  const githubUser = "frans203";
+export default function Home(props) {
+  const githubUser = props.githubUser;
   const [comunities, setComunities] = React.useState([]);
-  console.log("COMUNITIES", comunities);
 
   const favoritePeople = [
     "user1",
@@ -82,7 +82,7 @@ export default function Home() {
               });
       */
     let response = await fetch(
-      "https://api.github.com/users/frans203/followers"
+      `https://api.github.com/users/${githubUser}/followers`
     );
     let userData = await response.json();
     setFollowers(userData);
@@ -114,9 +114,8 @@ export default function Home() {
     let { data } = await datoCms.json();
     let { allCommunities } = data;
     setComunities(allCommunities);
-    console.log(allCommunities);
   }, []);
-  console.log("seguidores" + followers);
+
   //1-criar um box que vai ter um map baseado nos item do array que pegamos do github
 
   return (
@@ -156,7 +155,7 @@ export default function Home() {
                 }).then(async (response) => {
                   const data = await response.json();
                   const community = data.createdRegister;
-                  const updatedCommunities = [...communities, community];
+                  const updatedCommunities = [...comunities, community];
                   setComunities(updatedCommunities);
                 });
 
@@ -249,4 +248,31 @@ export default function Home() {
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  const token = cookies.USER_TOKEN;
+  const { githubUser } = jwt.decode(token);
+  const { isAuthenticated } = await fetch(
+    "https://alurakut.vercel.app/api/auth",
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  ).then((response) => response.json());
+  if (!isAuthenticated) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      githubUser,
+    }, // will be passed to the page component as props
+  };
 }
